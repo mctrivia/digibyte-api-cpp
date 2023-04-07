@@ -7,8 +7,8 @@
  * Declaration of error class for the JSON-RPC wrapper.
  */
 
-#ifndef BITCOIN_API_EXCEPTION_H
-#define BITCOIN_API_EXCEPTION_H
+#ifndef DIGIBYTE_API_EXCEPTION_H
+#define DIGIBYTE_API_EXCEPTION_H
 
 #include <string>
 #include <sstream>

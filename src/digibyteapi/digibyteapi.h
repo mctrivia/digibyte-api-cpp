@@ -8,8 +8,8 @@
  * a running instance of DigiByte daemon over JSON-RPC.
  */
 
-#ifndef BITCOIN_API_H
-#define BITCOIN_API_H
+#ifndef DIGIBYTE_API_H
+#define DIGIBYTE_API_H
 
 #include "types.h"
 #include "exception.h"
