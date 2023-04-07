@@ -1,12 +1,12 @@
-Bitcoin API
+DigiByte API
 ===========
 
-This is a C++ wrapper library for JSON-RPC communication with the Bitcoin daemon. It allows developers to communicate with the Bitcoin daemon without the need to pack and unpack JSON-RPC messages and thus simplifies the interaction with it.
+This is a C++ wrapper library for JSON-RPC communication with the DigiByte daemon. It allows developers to communicate with the DigiByte daemon without the need to pack and unpack JSON-RPC messages and thus simplifies the interaction with it.
 
 Building the library
 --------------------
 
-[![Build Status](https://travis-ci.org/minium/bitcoin-api-cpp.svg?branch=master)](https://travis-ci.org/minium/bitcoin-api-cpp)
+[![Build Status](https://travis-ci.org/minium/digibyte-api-cpp.svg?branch=master)](https://travis-ci.org/minium/digibyte-api-cpp)
 
 **Dependencies**
 
@@ -38,7 +38,7 @@ This example will show how the library can be used in your project.
 Filename getbalance.cpp
 
 ```
-#include <bitcoinapi/bitcoinapi.h>
+#include <digibyteapi/digibyteapi.h>
 
 int main()
 {
@@ -49,13 +49,13 @@ int main()
 
     try
     {
-        /* Constructor to connect to the bitcoin daemon */
-        BitcoinAPI btc(username, password, address, port);
+        /* Constructor to connect to the digibyte daemon */
+        DigiByteAPI btc(username, password, address, port);
 
         /* Example method - getbalance */
         std::cout << "Wallet balance: " << btc.getbalance() << std::endl;
     }
-    catch(BitcoinException e)
+    catch(DigiByteException e)
     {
         std::cerr << e.getMessage() << std::endl;
     }
@@ -64,15 +64,15 @@ int main()
 
 To successfully compile the program you need to link it with the new library:
 ```
-g++ getbalance.cpp -lbitcoinapi
+g++ getbalance.cpp -ldigibyteapi
 ```
 
-The full list of available API calls can be found [here](https://en.bitcoin.it/wiki/Original_Bitcoin_client/API_calls_list). Nearly the complete list of calls is implemented and thoroughly tested.
+The full list of available API calls can be found [here](https://developer.bitcoin.org/reference/rpc/). Nearly the complete list of calls is implemented and thoroughly tested.
 
 License
 -------
 
-The bitcoin-api-cpp library is released under the terms of [MIT](http://en.wikipedia.org/wiki/MIT_License).
+The digibyte-api-cpp library is released under the terms of [MIT](http://en.wikipedia.org/wiki/MIT_License).
 
 ```
 Copyright (c) 2014 Krzysztof Okupski
@@ -101,4 +101,4 @@ Used libraries
 
 Acknowledgements
 ----------------
-The original idea for a C++ wrapper for JSON-RPC communication originates from [here](https://github.com/mmgrant73/bitcoinapi). Upon closer evaluation, however, the library contained too many bugs and was thus completely rebuilt from bottom up.
+This code was base on the bitcoin-api-cpp [here](https://github.com/minium/bitcoin-api-cpp). However, the library was to old to still be useful.

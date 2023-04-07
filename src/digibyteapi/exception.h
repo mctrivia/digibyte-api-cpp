@@ -24,14 +24,14 @@ using Json::Reader;
 using jsonrpc::Errors;
 
 
-class BitcoinException: public std::exception
+class DigiByteException: public std::exception
 {
 private:
 	int code;
 	std::string msg;
 
 public:
-	explicit BitcoinException(int errcode, const std::string& message) {
+	explicit DigiByteException(int errcode, const std::string& message) {
 		
 		/* Connection error */
 		if(errcode == Errors::ERROR_CLIENT_CONNECTOR){
@@ -48,7 +48,7 @@ public:
 		}
 	}
 
-	~BitcoinException() throw() { };
+	~DigiByteException() throw() { };
 
 	int getCode(){
 		return code;
