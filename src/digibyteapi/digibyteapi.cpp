@@ -1376,16 +1376,31 @@ utxosetinfo_t DigiByteAPI::gettxoutsetinfo() {
 
 /**
  *
- * @param value - string number containing at least 1 decimal
+ * @param value - string number
  * @return
  */
 uint64_t DigiByteAPI::_dgbToSat(std::string value) {
-    value.append("0000000");    //make sure there are at least 8 decimals
-    size_t decimalPosition=value.find("."); //find where decimal is
-    value.erase(decimalPosition,1);   //erase the decimal
-    value.erase(decimalPosition+8);     //erase any characters beyond 1 decimal
+    //handle possible scientific notation
+    size_t ePosition = value.find("e");
+    int decimalOffset=0;
+    if (ePosition != std::string::npos) {
+        //value is in scientific notation
+        decimalOffset=stoi(value.substr(ePosition+1));
+        value.erase(ePosition);     //erase any characters beyond e(inclusive)
+    }
 
-    //convert to 64 bit number
+    //convert to satoshi string value
+    size_t decimalPosition = value.find("."); //find where decimal is
+    if (decimalPosition==std::string::npos) {
+        value.append(".0"); //if no decimal add one
+        decimalPosition = value.length()-2;
+    }
+    value.append("0000000");    //make sure there are at least 8 decimals
+    value.erase(decimalPosition, 1);   //erase the decimal
+    value.erase(decimalPosition + 8 + decimalOffset);     //erase any characters beyond 1 decimal
+
+
+    //convert to 64-bit number
     uint64_t result;
     std::istringstream iss(value);
     iss >> result;
