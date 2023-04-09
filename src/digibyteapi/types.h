@@ -169,12 +169,17 @@
 
 	struct vout_t{
 		double value;
+        uint64_t valueS;
 		unsigned int n;
 		scriptPubKey_t scriptPubKey;
 	};
 
 	struct decoderawtransaction_t{
 		std::string txid;
+        std::string hash;
+        unsigned int size;
+        unsigned int vsize;
+        unsigned int weight;
 		int version;
 		int locktime;
 		std::vector<vin_t> vin;
@@ -242,6 +247,8 @@
 		std::string hash;
 		int confirmations;
 		int size;
+        int strippedsize;
+        int weight;
 		int height;
 		int version;
 		std::string merkleroot;

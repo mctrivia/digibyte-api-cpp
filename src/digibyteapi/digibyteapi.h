@@ -22,6 +22,7 @@ class DigiByteAPI
 private:
     jsonrpc::HttpClient * httpClient;
     jsonrpc::Client * client;
+    uint64_t _dgbToSat(std::string value);
 
 public:
     /* === Constructor and Destructor === */
@@ -137,7 +138,7 @@ public:
 
 
     /* === Low level calls === */
-    getrawtransaction_t getrawtransaction(const std::string& txid, int verbose = 0);
+    getrawtransaction_t getrawtransaction(const std::string& txid, bool verbose = false);
     decodescript_t decodescript(const std::string& hexString);
     decoderawtransaction_t decoderawtransaction(const std::string& hexString);
     std::string sendrawtransaction(const std::string& hexString, bool highFee);

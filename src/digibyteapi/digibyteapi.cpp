@@ -929,6 +929,8 @@ blockinfo_t DigiByteAPI::getblock(const string& blockhash) {
 	ret.hash = result["hash"].asString();
 	ret.confirmations = result["confirmations"].asInt();
 	ret.size = result["size"].asInt();
+    ret.strippedsize = result["strippedsize"].asInt();
+    ret.weight = result["weight"].asInt();
 	ret.height = result["height"].asInt();
 	ret.version = result["version"].asInt();
 	ret.merkleroot = result["merkleroot"].asString();
@@ -1044,7 +1046,7 @@ txsinceblock_t DigiByteAPI::listsinceblock(const string& blockhash, int target_c
 
 
 /* === Raw transaction calls === */
-getrawtransaction_t DigiByteAPI::getrawtransaction(const string& txid, int verbose) {
+getrawtransaction_t DigiByteAPI::getrawtransaction(const string& txid, bool verbose) {
 	string command = "getrawtransaction";
 	Value params, result;
 	getrawtransaction_t ret;
@@ -1053,10 +1055,14 @@ getrawtransaction_t DigiByteAPI::getrawtransaction(const string& txid, int verbo
 	params.append(verbose);
 	result = sendcommand(command, params);
 
-	ret.hex = ((verbose == 0) ? result.asString() : result["hex"].asString());
+	ret.hex = (!verbose ? result.asString() : result["hex"].asString());
 
-	if(verbose != 0){
+	if(verbose){
 		ret.txid = result["txid"].asString();
+        ret.hash = result["hash"].asString();
+        ret.size = result["size"].asUInt();
+        ret.vsize = result["vsize"].asUInt();
+        ret.weight = result["weight"].asUInt();
 		ret.version = result["version"].asInt();
 		ret.locktime = result["locktime"].asInt();
 		for (ValueIterator it = result["vin"].begin(); it != result["vin"].end();
@@ -1077,7 +1083,8 @@ getrawtransaction_t DigiByteAPI::getrawtransaction(const string& txid, int verbo
 			vout_t output;
 
 			output.value = val["value"].asDouble();
-			output.n = val["n"].asUInt();
+            output.valueS= _dgbToSat(val["value"].asString());
+            output.n = val["n"].asUInt();
 			output.scriptPubKey.assm = val["scriptPubKey"]["asm"].asString();
 			output.scriptPubKey.hex = val["scriptPubKey"]["hex"].asString();
 			output.scriptPubKey.reqSigs = val["scriptPubKey"]["reqSigs"].asInt();
@@ -1128,7 +1135,11 @@ decoderawtransaction_t DigiByteAPI::decoderawtransaction(const string& hexString
 	result = sendcommand(command, params);
 
 	ret.txid = result["txid"].asString();
-	ret.version = result["version"].asInt();
+    ret.hash = result["hash"].asString();
+    ret.size = result["size"].asUInt();
+    ret.vsize = result["vsize"].asUInt();
+    ret.weight = result["weight"].asUInt();
+    ret.version = result["version"].asInt();
 	ret.locktime = result["locktime"].asInt();
 	for (ValueIterator it = result["vin"].begin(); it != result["vin"].end();
 			it++) {
@@ -1148,6 +1159,7 @@ decoderawtransaction_t DigiByteAPI::decoderawtransaction(const string& hexString
 		vout_t output;
 
 		output.value = val["value"].asDouble();
+        output.valueS= _dgbToSat(val["value"].asString());
 		output.n = val["n"].asUInt();
 		output.scriptPubKey.assm = val["scriptPubKey"]["asm"].asString();
 		output.scriptPubKey.hex = val["scriptPubKey"]["hex"].asString();
@@ -1360,4 +1372,22 @@ utxosetinfo_t DigiByteAPI::gettxoutsetinfo() {
 	ret.total_amount = result["total_amount"].asDouble();
 
 	return ret;
+}
+
+/**
+ *
+ * @param value - string number containing at least 1 decimal
+ * @return
+ */
+uint64_t DigiByteAPI::_dgbToSat(std::string value) {
+    value.append("0000000");    //make sure there are at least 8 decimals
+    size_t decimalPosition=value.find("."); //find where decimal is
+    value.erase(decimalPosition,1);   //erase the decimal
+    value.erase(decimalPosition+8);     //erase any characters beyond 1 decimal
+
+    //convert to 64 bit number
+    uint64_t result;
+    std::istringstream iss(value);
+    iss >> result;
+    return result;
 }
