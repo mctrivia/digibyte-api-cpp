@@ -1073,7 +1073,9 @@ getrawtransaction_t DigiByteAPI::getrawtransaction(const string& txid, bool verb
 			input.n = val["vout"].asUInt();
 			input.scriptSig.assm = val["scriptSig"]["asm"].asString();
 			input.scriptSig.hex = val["scriptSig"]["hex"].asString();
-			input.sequence = val["sequence"].asUInt();
+            for(ValueIterator it3 = val["txinwitness"].begin(); it3 != val["txinwitness"].end(); it3++){
+                input.txinwitness.push_back((*it3).asString());
+            }
 			ret.vin.push_back(input);
 		}
 
@@ -1149,6 +1151,9 @@ decoderawtransaction_t DigiByteAPI::decoderawtransaction(const string& hexString
 		input.n = val["vout"].asUInt();
 		input.scriptSig.assm = val["scriptSig"]["asm"].asString();
 		input.scriptSig.hex = val["scriptSig"]["hex"].asString();
+        for(ValueIterator it3 = val["txinwitness"].begin(); it3 != val["txinwitness"].end(); it3++){
+            input.txinwitness.push_back((*it3).asString());
+        }
 		input.sequence = val["sequence"].asUInt();
 		ret.vin.push_back(input);
 	}
